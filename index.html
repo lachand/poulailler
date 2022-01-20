@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<div style="float:left;">
+<h1>Etat du poulailler : <span id="state"></span></h1>
+<h1>Dernier mouvement de la porte : <span id="last_moove_at"></span></h1>
+<h1>Dernière vérification : <span id="last_update"></span></h1>
+</div>
+
+<div>
+ <img id="image_poulailler" src="" alt="">
+</div>
+<script>
+
+let pass = prompt("Un mot de pass est requis", "");
+  if (pass != null) {
+    const request = new XMLHttpRequest();
+request.open("GET", "https://json.extendsclass.com/bin/202177287713", true);
+request.setRequestHeader("Security-key", pass);
+request.onreadystatechange = () => {
+if(request.response !== ""){
+    etat = JSON.parse(request.response.replaceAll("'", '"'));
+	console.log(etat);
+	etatFr = (etat["status"] === "closed" ? "fermé" : "ouvert");
+	document.getElementById('state').innerHTML = etatFr;
+	document.getElementById('last_moove_at').innerHTML = etat['last_moove_at'];
+	document.getElementById('last_update').innerHTML = etat['last_update'];
+
+	if(etatFr === "fermé"){
+	document.getElementById('image_poulailler').src = "closed.png";
+	} else {
+	document.getElementById('image_poulailler').src = "opened.png";
+	}
+	}
+};
+request.send();
+  }
+function doAuthentication(pass) {
+
+}
+</script>
+
+</body>
+</html>
+
