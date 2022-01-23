@@ -6,6 +6,7 @@
 <h1>Etat du poulailler : <span id="state"></span></h1>
 <h1>Dernier mouvement de la porte : <span id="last_moove_at"></span></h1>
 <h1>Dernière vérification : <span id="last_update"></span></h1>
+<button onclick="checkCookie()">mettre à jour</button>
 </div>
 
 <div>
@@ -13,31 +14,75 @@
 </div>
 <script>
 
-let pass = prompt("Un mot de pass est requis", "");
-  if (pass != null) {
-    const request = new XMLHttpRequest();
+let tokenJson;
+
+checkCookie();
+
+ function setCookie(cname, cvalue) {
+  document.cookie = cname + "=" + cvalue + ";path=/";
+}
+
+function getCookie(cname) {
+  let name = cname + "=";
+  let ca = document.cookie.split(';');
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+function checkCookie() {
+  tokenJson = getCookie("tokenJson");
+  if (tokenJson != "") {
+    checkStatus();
+  } else {
+    tokenJson = prompt("Mot de passe requis", "");
+    if (tokenJson != "" && tokenJson != null) {
+      setCookie("tokenJson", tokenJson);
+      checkStatus();
+    }
+  }
+}
+
+function checkStatus() {
+const request = new XMLHttpRequest();
 request.open("GET", "https://json.extendsclass.com/bin/202177287713", true);
-request.setRequestHeader("Security-key", pass);
+request.setRequestHeader("Security-key", tokenJson);
 request.onreadystatechange = () => {
 if(request.response !== ""){
     etat = JSON.parse(request.response.replaceAll("'", '"'));
-	console.log(etat);
-	etatFr = (etat["status"] === "closed" ? "fermé" : "ouvert");
+    status = etat["status"];
+    etatFr = "";
+	switch (status){
+        case "closed":
+            etatFr = "fermé";
+            document.getElementById('image_poulailler').src = "closed.png";
+            break;
+        case "closed (manual)":
+            etatFr = "fermé (manuellement)";
+            document.getElementById('image_poulailler').src = "closed.png";
+            break;
+        case "opened":
+            etatFr = "ouvert";
+            document.getElementById('image_poulailler').src = "opened.png";
+            break;
+        case "opened (manual)":
+            etatFr = "ouvert (manuellement)";
+            document.getElementById('image_poulailler').src = "opened.png";
+            break;
+	}
 	document.getElementById('state').innerHTML = etatFr;
 	document.getElementById('last_moove_at').innerHTML = etat['last_moove_at'];
 	document.getElementById('last_update').innerHTML = etat['last_update'];
-
-	if(etatFr === "fermé"){
-	document.getElementById('image_poulailler').src = "closed.png";
-	} else {
-	document.getElementById('image_poulailler').src = "opened.png";
-	}
 	}
 };
 request.send();
-  }
-function doAuthentication(pass) {
-
 }
 </script>
 
