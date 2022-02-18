@@ -3,9 +3,15 @@
 <body>
 
 <div style="float:left;">
-<h1>Etat du poulailler : <span id="state"></span></h1>
-<h1>Dernier mouvement de la porte : <span id="last_moove_at"></span></h1>
-<h1>Dernière vérification : <span id="last_update"></span></h1>
+<h2>Etat du poulailler : <span id="state"></span></h2>
+<h2>Dernier mouvement de la porte : <span id="last_moove_at"></span></h2>
+<h2>Dernière vérification : <span id="last_update"></span></h2>
+<h2>Mode automatique : <span id="automatic"></span></h2>
+<h2>Prochaine action : <span id="action"></span></h2>
+<h2>Décalage matin : <span id="sunrise_offset"></span></h2>
+<h2>Décalage soir : <span id="sunset_offset"></span></h2>
+<h2>Auverture prévue aujourd'hui : <span id="today_open"></span></h2>
+<h2>Fermeture prévue aujourd'hui : <span id="today_close"></span></h2>
 <button onclick="checkCookie()">mettre à jour</button>
 </div>
 
@@ -80,6 +86,12 @@ if(request.response !== ""){
 	document.getElementById('state').innerHTML = etatFr;
 	document.getElementById('last_moove_at').innerHTML = etat['last_moove_at'];
 	document.getElementById('last_update').innerHTML = etat['last_update'];
+	document.getElementById('action').innerHtml = etat['action'];
+	document.getElementById('sunrise_offset').innerHtml = etat['sunrise_offset'];
+	document.getElementById('sunset_offset').innerHtml = etat['sunset_offset'];
+	document.getElementById('automatic').innerHtml = etat['automatic'];
+	document.getElementById('today_open').innerHtml = etat['today_open'];
+	document.getElementById('today_close').innerHtml = etat['today_close'];
 	}
 };
 request.send();
