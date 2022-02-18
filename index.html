@@ -83,6 +83,7 @@ if(request.response !== ""){
             document.getElementById('image_poulailler').src = "opened.png";
             break;
 	}
+	console.log(etat);
 	document.getElementById('state').innerHTML = etatFr;
 	document.getElementById('last_moove_at').innerHTML = etat['last_moove_at'];
 	document.getElementById('last_update').innerHTML = etat['last_update'];
